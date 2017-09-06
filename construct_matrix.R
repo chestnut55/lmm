@@ -26,7 +26,7 @@ construct_related_matrix <- function() {
   ### PTR sample with run id instead of sample name, T2D and control group samples from PTR
   ptr_data <-
     read.table(
-      file = "~/code/R/lmm/data/PTR/ptr_qin.txt",
+      file = "~/git-code/R/lmm/data/PTR/ptr_qin.txt",
       header = TRUE,
       stringsAsFactors = FALSE,
       sep = "\t"
@@ -37,7 +37,7 @@ construct_related_matrix <- function() {
   ### KEGG --- T2D and control group for KEGG
   kegg_data <-
     read.table(
-      file = "~/code/R/lmm/data/KEGG/KEGG.StageII.relative_abun.txt",
+      file = "~/git-code/R/lmm/data/KEGG/KEGG.StageII.relative_abun.txt",
       header = TRUE,
       check.names = FALSE,
       stringsAsFactors = FALSE,
@@ -57,7 +57,7 @@ construct_related_matrix <- function() {
   rownames(result_maxtrix) <- rownames(ptr_data)
   orgs <-
     read.table(
-      file = "~/code/R/lmm/data/organism_species.csv",
+      file = "~/git-code/R/lmm/data/organism_species.csv",
       header = TRUE,
       check.names = FALSE,
       stringsAsFactors = FALSE,
@@ -141,7 +141,7 @@ construct_related_matrix <- function() {
 }
 
 retrieve_related_matrix <- function(){
-  related_matrix <- read.table(file = "~/code/R/lmm/data/result_matrix01.txt", sep = "\t")
+  related_matrix <- read.table(file = "~/git-code/R/lmm/data/result_matrix01.txt", sep = "\t")
   return (related_matrix)
 }
 

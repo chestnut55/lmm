@@ -1,6 +1,6 @@
-source("~/code/R/lmm/read_tables.R")
-source("~/code/R/lmm/construct_matrix.R")
-source("~/code/R/lmm/lmm_fit.R")
+source("~/git-code/R/lmm/read_tables.R")
+source("~/git-code/R/lmm/construct_matrix.R")
+source("~/git-code/R/lmm/lmm_fit.R")
 
 ### organism and species
 organism_species_data <- read_organism_species()

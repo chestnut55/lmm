@@ -1,6 +1,6 @@
 read_organism_species <- function(){
   organism_species <-
-    read.table(file = "~/git-code/R/linear_mixed_model/data/organism_species.csv",
+    read.table(file = "~/git-code/R/lmm/data/organism_species.csv",
                header = TRUE,
                check.names = FALSE,
                stringsAsFactors = FALSE,
@@ -12,13 +12,13 @@ read_organism_species <- function(){
 
 read_stageII_sample <- function(){
   #### type 2 diabetes samples, control group and disease group
-  stageII_samples <-   read.csv(file = "~/git-code/R/linear_mixed_model/data/T2D/stage II.csv",
+  stageII_samples <-   read.csv(file = "~/git-code/R/lmm/data/T2D/stage II.csv",
                                 header = TRUE,
                                 check.names = FALSE,
                                 sep = ",")
   data_result <- list()
   data_result$T2D <- stageII_samples[stageII_samples$`Diabetic (Y or N)` == 'Y',] # T2D group samples
-  data_result$control <- stageII_samples[stageII_samples$`Diabetic (Y or N)` == 'N',] # contro group samples
+  data_result$control <- stageII_samples[stageII_samples$`Diabetic (Y or N)` == 'N',] # control group samples
   
   return (data_result)
 }
@@ -26,7 +26,7 @@ read_stageII_sample <- function(){
 
 read_bgi_data <- function(){
   bgi_SRP008047 <-
-    read.csv("~/git-code/R/linear_mixed_model/data/EBI/mg_project_summary_20170706_SRP008047.csv",
+    read.csv("~/git-code/R/lmm/data/EBI/mg_project_summary_20170706_SRP008047.csv",
              header = TRUE,
              check.names = FALSE,
              stringsAsFactors = FALSE,
@@ -35,7 +35,7 @@ read_bgi_data <- function(){
   
   #bgi_SRP008047 <- bgi_SRP008047[,1:ncol(bgi_SRP008047)-1]
   bgi_SRP011011 <-
-    read.csv(file = "~/git-code/R/linear_mixed_model/data/EBI/mg_project_summary_20170706_SRP011011.csv",
+    read.csv(file = "~/git-code/R/lmm/data/EBI/mg_project_summary_20170706_SRP011011.csv",
              header = TRUE,
              check.names = FALSE,
              stringsAsFactors = FALSE,
@@ -63,7 +63,7 @@ read_bgi_data <- function(){
 read_ptr_data <- function(){
   ### PTR sample with run id instead of sample name, T2D and control group samples from PTR
   data <-
-    read.table(file = "~/git-code/R/linear_mixed_model/data/PTR/ptr_qin.txt",
+    read.table(file = "~/git-code/R/lmm/data/PTR/ptr_qin.txt",
                header = TRUE,
                stringsAsFactors = FALSE,
                sep = "\t")
@@ -109,7 +109,7 @@ read_ptr_data <- function(){
 read_kegg_data <- function(){
   ### KEGG --- T2D and control group for KEGG
   kegg_data <-
-    read.table(file = "~/git-code/R/linear_mixed_model/data/KEGG/KEGG.StageII.relative_abun.txt",
+    read.table(file = "~/git-code/R/lmm/data/KEGG/KEGG.StageII.relative_abun.txt",
                header = TRUE,
                check.names = FALSE,
                stringsAsFactors = FALSE,

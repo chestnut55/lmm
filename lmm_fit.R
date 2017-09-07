@@ -74,15 +74,15 @@ fit2 <- function(ptr_data, kegg_data, organism_species, result_maxtrix){
     return (lmm_result_maxtrix)
 }
 
-###TODO this method not finish yet! 2017-09-05
 ### fit the linear mixed model
 ### ptr_data : t2d or control group: species * samples
 ### kegg_data : t2d or control group: ko * samples
 ### result_maxtrix : 0-1 matrix for ptr and kegg: species * ko
 lmm_fit <- function(ptr_data, kegg_data, result_maxtrix){
     result_maxtrix[is.na(result_maxtrix)] <- 0 # replace the NA with 0
-    K <- cor(ptr_data)
-    decomp <- eigen(K, symmetric=TRUE)
+    decomp <- svd(scale(t(ptr_data)))
+    #K <- cor(ptr_data) # covariance matrix
+    #decomp <- eigen(K, symmetric=TRUE)
     # y is n * 1 vector, n is number of samples
     # x is n * 1 vector, n is number of samples
     # α is 1 * m vector, m is number of species

@@ -87,6 +87,24 @@ read_ptr_data <- function(){
   ptr_data_stageII_T2D <- ptr_data_stageII_T2D[,c(sort(colnames(ptr_data_stageII_T2D)))] # T2D
   ptr_data_stageII_control <- ptr_data_stageII_control[,c(sort(colnames(ptr_data_stageII_control)))]  # control
   
+  # remove the rows with too many NA values(>80%)
+  a <- c()
+  for(i in 1:nrow(ptr_data_stageII_T2D)){
+      len <- length( which(is.na(ptr_data_stageII_T2D[i,])))
+      a <- c(a ,len)
+  }
+  
+  b <- c()
+  for (i in 1:nrow(ptr_data_stageII_control)) {
+      len <- length(which(is.na(ptr_data_stageII_control[i, ])))
+      b <- c(b , len)
+  }
+  
+  removed_indx <- intersect(which(a>60),which(b>60))
+  ptr_data_stageII_T2D <- ptr_data_stageII_T2D[-removed_indx,]
+  ptr_data_stageII_control <- ptr_data_stageII_control[-removed_indx,]
+  
+  
   # set the NA value to column mean
   ind <- which(is.na(ptr_data_stageII_T2D), arr.ind=TRUE)
   ptr_data_stageII_T2D[ind] <- rowMeans(ptr_data_stageII_T2D,  na.rm = TRUE)[ind[,1]]

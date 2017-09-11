@@ -55,9 +55,12 @@ control <- remove_no_signicant(control, P_VALUE)
 
 #intersect(colnames(t2d),colnames(control))
 # KO map to pathway
-result <- map2pathway(t2d)
-control_result <- map2pathway(control)
+t2d_pathway_result <- map2pathway(t2d)
+control_pathway_result <- map2pathway(control)
 
 t2d_gene_set <- convet2genes("~/git-code/R/lmm/data/generated/gsea/t2d/",t2d, P_VALUE)
-control_gene_set <- convet2genes("~/git-code/R/lmmdata/generated/gsea/control/",control, P_VALUE)
+control_gene_set <- convet2genes("~/git-code/R/lmm/data/generated/gsea/control/",control, P_VALUE)
+
+t2d_ko_set <- get_significant_ko("~/git-code/R/lmm/data/generated/ko/t2d/",t2d, P_VALUE)
+control_ko_set <- get_significant_ko("~/git-code/R/lmm/data/generated/ko/control/",control, P_VALUE)
 ######################################################

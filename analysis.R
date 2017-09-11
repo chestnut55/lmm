@@ -1,74 +1,66 @@
-### filter the KO according to p-value
-t2d <- read.table("~/git-code/R/lmm/t2d_fit2.txt", sep = "\t")
-#t2d[is.na(t2d)] <- -1
-c <- c()
-for(i in 1:ncol(t2d)){
-    indx <- which(!is.na(t2d[,i]) & t2d[,i] < 0.00001 & t2d[,i] >0)
-    if(length(indx) > 0){
-        c <- c(c,i)
+### remove the row or column without any significant level
+### data : t2d or control
+remove_no_signicant <- function(data, P_VALUE){
+    c <- c()
+    for(i in 1:ncol(data)){
+        indx <- which(!is.na(data[,i]) & data[,i] < P_VALUE & data[,i] >0)
+        if(length(indx) > 0){
+            c <- c(c,i)
+        }
+    }
+    data <- data[,c]
+    
+    ### filter the bacteria according to p-value
+    v <- c()
+    for(i in 1:nrow(data)){
+        indx <- which(!is.na(data[i,]) & data[i,] < P_VALUE & data[i,] >0)
+        if(length(indx) > 0){
+            v <- c(v,i)
+        }
+    }
+    data <- data[v,]
+    
+    return (data)
+}
+### keggGet or keggFind all OK, keggFind is simple but a little slowly
+convet2genes <- function(path, species_ko, P_VALUE){
+    genes_set <- c()
+    rownames <- rownames(species_ko)
+    colnames <- colnames(species_ko)
+    for(i in 1:nrow(species_ko)){
+        indx <- which(!is.na(species_ko[i,]) & species_ko[i,] < P_VALUE & species_ko[i,] >0)
+        row_name <- rownames[i]
+        for(k in colnames[indx]){
+            genes <- names(keggFind("genes",c(row_name,k)))
+            if(length(genes) > 0){
+                for(j in 1:length(genes)){
+                    ll <- unlist(strsplit(genes[j],":"))
+                    if(length(ll) >1){
+                        genes_set <- c(genes_set, ll[2])
+                    }
+                }   
+            }
+        }
+        write.table(x = genes_set, file = paste0(path,row_name), sep = "\n", row.names = FALSE, col.names = FALSE)
+        genes_set <- c()
     }
 }
-t2d <- t2d[,c]
 
-### filter the bacteria according to p-value
-v <- c()
-for(i in 1:nrow(t2d)){
-    indx <- which(!is.na(t2d[i,]) & t2d[i,] < 0.00001 & t2d[i,] >0)
-    if(length(indx) > 0){
-        v <- c(v,i)
+map2pathway <- function(data){
+    # KO map to pathway
+    result <- c()
+    k <- c()
+    for(ko in colnames(data)){
+        k <- c(k,ko)
+        if(length(k)>= 10){
+            result <- c(result,names(keggGet(k)[[1]]$PATHWAY))
+            k <- c()
+        }
     }
-}
-t2d <- t2d[v,]
-
-c <- c()
-control <- read.table("~/git-code/R/lmm/control_fit2.txt", sep = "\t")
-for(i in 1:ncol(control)){
-    indx <- which(!is.na(control[,i]) & control[,i] < 0.00001 & control[,i] >0)
-    if(length(indx) > 0){
-        c <- c(c,i)
+    if(length(k) >0){
+        result <- c(result,names(keggGet(k)[[1]]$PATHWAY)) 
     }
+    result <- as.factor(result)
+    
+    return (result)
 }
-control <- control[,c]
-### filter the bacteria according to p-value
-v <- c()
-for(i in 1:nrow(control)){
-    indx <- which(!is.na(control[i,]) & control[i,] < 0.00001 & control[i,] >0)
-    if(length(indx) > 0){
-        v <- c(v,i)
-    }
-}
-control <- control[v,]
-
-#intersect(colnames(t2d),colnames(control))
-# KO map to pathway
-library(KEGGREST)
-result <- c()
-k <- c()
-for(ko in colnames(t2d)){
-    k <- c(k,ko)
-    if(length(k)>= 10){
-        result <- c(result,names(keggGet(k)[[1]]$PATHWAY))
-        k <- c()
-    }
-}
-if(length(k) >0){
-    result <- c(result,names(keggGet(k)[[1]]$PATHWAY)) 
-}
-result <- as.factor(result)
-
-
-control_result <- c()
-k <- c()
-for(ko in colnames(control)){
-    k <- c(k,ko)
-    if(length(k)>= 10){
-        control_result <- c(control_result,names(keggGet(k)[[1]]$PATHWAY))
-        k <- c()
-    }
-}
-if(length(k) >0){
-    control_result <- c(control_result,names(keggGet(k)[[1]]$PATHWAY)) 
-}
-control_result <- as.factor(control_result)
-
-

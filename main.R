@@ -1,6 +1,7 @@
 source("~/git-code/R/lmm/read_tables.R")
 source("~/git-code/R/lmm/construct_matrix.R")
 source("~/git-code/R/lmm/lmm_fit.R")
+source("~/git-code/R/lmm/analysis.R")
 
 ### organism and species
 organism_species_data <- read_organism_species()
@@ -20,9 +21,31 @@ library("confeti")
 #write.table(x = control, file = "control_fit.txt", sep = "\t")
 
 t2d <- lmm_fit(ptr_data = ptr_data$T2D,kegg_data = kegg_data$T2D,result_maxtrix = related_matrix)
-write.table(x = t2d, file = "t2d_fit2.txt", sep = "\t")
+write.table(x = t2d, file = "~/git-code/R/lmm/data/generated/fit/t2d_fit.txt", sep = "\t")
 control <- lmm_fit(ptr_data = ptr_data$control,kegg_data = kegg_data$control,result_maxtrix = related_matrix)
-write.table(x = control, file = "control_fit2.txt", sep = "\t")
+write.table(x = control, file = "~/git-code/R/lmm/data/generated/fit/control_fit.txt", sep = "\t")
+
+
+############result analysis###########################
+library(KEGGREST)
+### filter the KO according to p-value
+P_VALUE <- 0.00001
+
+t2d <- read.table("~/git-code/R/lmm/data/generated/fit/t2d_fit.txt", sep = "\t")
+control <- read.table("~/git-code/R/lmm/data/generated/fit/control_fit.txt", sep = "\t")
+
+t2d <- remove_no_signicant(t2d, P_VALUE)
+control <- remove_no_signicant(control, P_VALUE)
+
+#intersect(colnames(t2d),colnames(control))
+# KO map to pathway
+result <- map2pathway(t2d)
+control_result <- map2pathway(control)
+
+t2d_gene_set <- convet2genes("~/git-code/R/lmm/data/generated/gsea/t2d/",t2d, P_VALUE)
+control_gene_set <- convet2genes("~/git-code/R/lmmdata/generated/gsea/control/",control, P_VALUE)
+
+#########################################################
 
 
 

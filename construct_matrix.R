@@ -140,8 +140,29 @@ construct_related_matrix <- function() {
     write.table(result_maxtrix, "result_matrix01.txt", sep = "\t")
 }
 
+
+### construct matrix through keggGet API
+### m_matrix is species * ko matrix
+construct_01_matrix <- function(m_matrix){
+    all_correct_ko <- intersect(get_all_ko(), colnames(m_matrix))
+    for(ko in all_correct_ko){
+        genes_set <- keggGet(ko)[[1]]$GENES
+        for(i in 1:length(genes_set)){
+            ul <- unlist(strsplit(genes_set[i],":"))
+            row_indx <- match(tolower(ul[1]), rownames(m_matrix))
+            if(!is.na(row_indx)){
+                col_indx <- match(ko, colnames(m_matrix))
+                m_matrix[row_indx, col_indx] <- 1
+                break
+            }
+        }
+    }
+    return (m_matrix)
+}
+
+
 retrieve_related_matrix <- function(){
-  related_matrix <- read.table(file = "~/git-code/R/lmm/data/result_matrix01.txt", sep = "\t")
+  related_matrix <- read.table(file = "~/git-code/R/lmm/data/generated/result_01_matrix.txt", sep = "\t")
   return (related_matrix)
 }
 
@@ -155,4 +176,16 @@ ramdom_sample_matrix <- function(organism_species, kegg_data){
   rownames(result_maxtrix) <- organism_species$organism
   
   return (result_maxtrix)
+}
+
+### get all ko , otherwise if the ko no exist, the methods keggGet will throw exception
+###
+get_all_ko <- function(){
+    kk <- keggList("ko")
+    result <- c()
+    for(k in names(kk)){
+        ko <- unlist(strsplit(k,":"))[2]
+        result <- c(result, ko)
+    }
+    return(result)
 }

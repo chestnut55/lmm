@@ -149,11 +149,10 @@ construct_01_matrix <- function(m_matrix){
         genes_set <- keggGet(ko)[[1]]$GENES
         for(i in 1:length(genes_set)){
             ul <- unlist(strsplit(genes_set[i],":"))
-            row_indx <- match(tolower(ul[1]), rownames(m_matrix))
-            if(!is.na(row_indx)){
+            row_indx <- which(rownames(m_matrix) == tolower(ul[1]))
+            if(length(row_indx) >0){
                 col_indx <- match(ko, colnames(m_matrix))
                 m_matrix[row_indx, col_indx] <- 1
-                break
             }
         }
     }

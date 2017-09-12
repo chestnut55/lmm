@@ -61,6 +61,10 @@ control_pathway_result <- map2pathway(control)
 t2d_gene_set <- convet2genes("~/git-code/R/lmm/data/generated/gsea/t2d/",t2d, P_VALUE)
 control_gene_set <- convet2genes("~/git-code/R/lmm/data/generated/gsea/control/",control, P_VALUE)
 
+### convert to ncbi protein id
+convert2ncbi_protein_id(path = "~/git-code/R/lmm/data/generated/gsea/t2d") # t2d
+convert2ncbi_protein_id(path = "~/git-code/R/lmm/data/generated/gsea/control") # control
+
 t2d_ko_set <- get_significant_ko("~/git-code/R/lmm/data/generated/ko/t2d/",t2d, P_VALUE)
 control_ko_set <- get_significant_ko("~/git-code/R/lmm/data/generated/ko/control/",control, P_VALUE)
 ######################################################

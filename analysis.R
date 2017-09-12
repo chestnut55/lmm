@@ -34,10 +34,7 @@ convet2genes <- function(path, species_ko, P_VALUE){
             genes <- names(keggFind("genes",c(row_name,k)))
             if(length(genes) > 0){
                 for(j in 1:length(genes)){
-                    ll <- unlist(strsplit(genes[j],":"))
-                    if(length(ll) >1){
-                        genes_set <- c(genes_set, ll[2])
-                    }
+                    genes_set <- c(genes_set, genes[j])
                 }   
             }
         }
@@ -70,4 +67,19 @@ get_significant_ko <- function(write_path, data, p_value){
        indx <- which(data[i,]<p_value & data[i,]>0)
        write.table(x = colnames(data)[indx], file = paste0(write_path,rownames(data)[i]), sep = "\n", row.names = FALSE, col.names = FALSE)
     }
+}
+
+### add #2017.09.12
+### convert KEGG access number to ncbi protein id
+convert2ncbi_protein_id <- function(file_path){
+    t2d_files <- list.files(path = file_path)
+    lapply(t2d_files, function(x) {
+        kegg_genes_id <- read.table(file = x, sep = "\n")
+        set <- c()
+        for(gene in kegg_genes_id){
+            ncbi_protein_id <- unname(keggConv("ncbi-proteinid",gene))
+            set <- c(set, ncbi_protein_id)
+        }
+        write.table(x = set, file = paste0(file_path,"protein/",file_name), sep = "\n", row.names = FALSE, col.names = FALSE)
+    })
 }

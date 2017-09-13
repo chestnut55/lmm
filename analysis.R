@@ -71,15 +71,18 @@ get_significant_ko <- function(write_path, data, p_value){
 
 ### add #2017.09.12
 ### convert KEGG access number to ncbi protein id
-convert2ncbi_protein_id <- function(file_path){
-    t2d_files <- list.files(path = file_path)
+convert2ncbi_protein_id <- function(file_in_path, file_out_path){
+    t2d_files <- list.files(path = file_in_path, all.files = FALSE, full.names = FALSE, recursive = FALSE, include.dirs = FALSE)
     lapply(t2d_files, function(x) {
-        kegg_genes_id <- read.table(file = x, sep = "\n")
+        file_in_name <- paste0(file_in_path, x)
+        print(file_in_name)
+        kegg_genes_id <- read.table(file = file_in_name, sep = "\n", header = FALSE)
         set <- c()
         for(gene in kegg_genes_id){
             ncbi_protein_id <- unname(keggConv("ncbi-proteinid",gene))
             set <- c(set, ncbi_protein_id)
         }
-        write.table(x = set, file = paste0(file_path,"protein/",file_name), sep = "\n", row.names = FALSE, col.names = FALSE)
+        file_out_name <- paste0(file_out_path, x)
+        write.table(x = set, file = file_out_name, sep = "\n", row.names = FALSE, col.names = FALSE)
     })
 }

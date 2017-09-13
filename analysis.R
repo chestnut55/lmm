@@ -63,10 +63,13 @@ map2pathway <- function(data){
 }
 
 get_significant_ko <- function(write_path, data, p_value){
+    result <- list()
     for(i in 1:ncol(data)){
        indx <- which(data[i,]<p_value & data[i,]>0)
+       result[[rownames(data)[i]]] <- colnames(data)[indx]
        write.table(x = colnames(data)[indx], file = paste0(write_path,rownames(data)[i]), sep = "\n", row.names = FALSE, col.names = FALSE)
     }
+    return (result)
 }
 
 ### add #2017.09.12

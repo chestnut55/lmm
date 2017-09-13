@@ -9,6 +9,8 @@ source("~/git-code/R/lmm/construct_matrix.R")
 source("~/git-code/R/lmm/lmm_fit.R")
 ### 4. result analysis
 source("~/git-code/R/lmm/analysis.R")
+### 5. draw graphs
+source("~/git-code/R/lmm/graph.R")
 
 ########################PART 1. read tables########################
 ### organism and species
@@ -45,7 +47,7 @@ write.table(x = control, file = "~/git-code/R/lmm/data/generated/fit/control_fit
 
 ########################PART 4. result analysis########################
 ### filter the KO according to p-value
-P_VALUE <- 0.001
+P_VALUE <- 0.0001
 
 t2d <- read.table("~/git-code/R/lmm/data/generated/fit/t2d_fit.txt", sep = "\t")
 control <- read.table("~/git-code/R/lmm/data/generated/fit/control_fit.txt", sep = "\t")
@@ -58,6 +60,7 @@ control <- remove_no_signicant(control, P_VALUE)
 t2d_pathway_result <- map2pathway(t2d)
 control_pathway_result <- map2pathway(control)
 
+# get KEGG protein access number according to KO number
 t2d_gene_set <- convet2genes("~/git-code/R/lmm/data/generated/gsea/t2d/",t2d, P_VALUE)
 control_gene_set <- convet2genes("~/git-code/R/lmm/data/generated/gsea/control/",control, P_VALUE)
 
@@ -67,6 +70,8 @@ convert2ncbi_protein_id("~/git-code/R/lmm/data/generated/gsea/t2d/",
 convert2ncbi_protein_id("~/git-code/R/lmm/data/generated/gsea/control/",
                         "~/git-code/R/lmm/data/generated/protein/control/") # control
 
-t2d_ko_set <- get_significant_ko("~/git-code/R/lmm/data/generated/ko/t2d/",t2d, P_VALUE)
-control_ko_set <- get_significant_ko("~/git-code/R/lmm/data/generated/ko/control/",control, P_VALUE)
-######################################################
+t2d_ko_list <- get_significant_ko("~/git-code/R/lmm/data/generated/ko/t2d/",t2d, P_VALUE)
+control_ko_list <- get_significant_ko("~/git-code/R/lmm/data/generated/ko/control/",control, P_VALUE)
+######################draw graphs##############################
+draw_bip_network(t2d, p_value = P_VALUE)
+draw_bip_network(control, p_value = P_VALUE)

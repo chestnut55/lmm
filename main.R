@@ -47,7 +47,7 @@ write.table(x = control, file = "~/git-code/R/lmm/data/generated/fit/control_fit
 
 ########################PART 4. result analysis########################
 ### filter the KO according to p-value
-P_VALUE <- 0.0001
+P_VALUE <- 0.0005
 
 t2d <- read.table("~/git-code/R/lmm/data/generated/fit/t2d_fit.txt", sep = "\t")
 control <- read.table("~/git-code/R/lmm/data/generated/fit/control_fit.txt", sep = "\t")

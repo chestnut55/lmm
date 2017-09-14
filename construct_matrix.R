@@ -148,11 +148,14 @@ construct_01_matrix <- function(m_matrix){
     for(ko in all_correct_ko){
         genes_set <- keggGet(ko)[[1]]$GENES
         for(i in 1:length(genes_set)){
-            ul <- unlist(strsplit(genes_set[i],":"))
-            row_indx <- which(rownames(m_matrix) == tolower(ul[1]))
-            if(length(row_indx) >0){
-                col_indx <- match(ko, colnames(m_matrix))
-                m_matrix[row_indx, col_indx] <- 1
+            gene <- genes_set[i]
+            if(!is.null(gene) & length(gene)>0){
+                ul <- unlist(strsplit(gene,":"))
+                row_indx <- which(rownames(m_matrix) == tolower(ul[1]))
+                if(length(row_indx) >0){
+                    col_indx <- match(ko, colnames(m_matrix))
+                    m_matrix[row_indx, col_indx] <- 1
+                }
             }
         }
     }

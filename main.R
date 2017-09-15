@@ -77,6 +77,14 @@ convert2ncbi_protein_id("~/git-code/R/lmm/data/generated/gsea/control/",
 
 t2d_ko_list <- get_significant_ko("~/git-code/R/lmm/data/generated/ko/t2d/",t2d, P_VALUE)
 control_ko_list <- get_significant_ko("~/git-code/R/lmm/data/generated/ko/control/",control, P_VALUE)
-######################draw graphs##############################
+######################draw graphs for KO and species##############################
 draw_bip_network(t2d, p_value = P_VALUE)
 draw_bip_network(control, p_value = P_VALUE)
+
+######################draw weighted graphs for pathway and species##############################
+t2d <- read.table("~/git-code/R/lmm/data/generated/t2d_pathway", sep = "\t")
+t2d[is.na(t2d)] <- 0
+control <- read.table("~/git-code/R/lmm/data/generated/control_pathway", sep = "\t")
+control[is.na(control)] <- 0
+draw_weight_bip_network(t2d)
+draw_weight_bip_network(control)

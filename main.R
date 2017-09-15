@@ -55,14 +55,19 @@ control <- read.table("~/git-code/R/lmm/data/generated/fit/control_fit.txt", sep
 t2d <- remove_no_signicant(t2d, P_VALUE)
 control <- remove_no_signicant(control, P_VALUE)
 
-#intersect(colnames(t2d),colnames(control))
-# KO map to pathway
-t2d_pathway_result <- map2pathway(t2d)
-control_pathway_result <- map2pathway(control)
+########################ko and species map###################################################
+# KO map to pathway , a little slowly
+t2d_pathway_result <- map2pathway("~/git-code/R/lmm/data/generated/pathway/t2d/",t2d, P_VALUE)
+control_pathway_result <- map2pathway("~/git-code/R/lmm/data/generated/pathway/control/",control, P_VALUE)
+
+t2d_pathway_matrix <- to_pathway_matrix("~/git-code/R/lmm/data/generated/t2d_pathway",t2d_pathway_result)
+control_pathway_matrix <- to_pathway_matrix("~/git-code/R/lmm/data/generated/control_pathway", control_pathway_result)
+#######################################end###################################################
+
 
 # get KEGG protein access number according to KO number
-t2d_gene_set <- convet2genes("~/git-code/R/lmm/data/generated/gsea/t2d/",t2d, P_VALUE)
-control_gene_set <- convet2genes("~/git-code/R/lmm/data/generated/gsea/control/",control, P_VALUE)
+t2d_gene_set <- convert2genes("~/git-code/R/lmm/data/generated/gsea/t2d/",t2d, P_VALUE)
+control_gene_set <- convert2genes("~/git-code/R/lmm/data/generated/gsea/control/",control, P_VALUE)
 
 ### convert to ncbi protein id
 convert2ncbi_protein_id("~/git-code/R/lmm/data/generated/gsea/t2d/", 

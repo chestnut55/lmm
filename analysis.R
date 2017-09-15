@@ -23,7 +23,7 @@ remove_no_signicant <- function(data, P_VALUE){
     return (data)
 }
 ### keggGet or keggFind all OK, keggFind is simple but a little slowly
-convet2genes <- function(path, species_ko, P_VALUE){
+convert2genes <- function(path, species_ko, P_VALUE){
     genes_set <- c()
     rownames <- rownames(species_ko)
     colnames <- colnames(species_ko)
@@ -43,22 +43,52 @@ convet2genes <- function(path, species_ko, P_VALUE){
     }
 }
 
-map2pathway <- function(data){
-    # KO map to pathway
-    result <- c()
-    k <- c()
-    for(ko in colnames(data)){
-        k <- c(k,ko)
-        if(length(k)>= 10){
-            result <- c(result,names(keggGet(k)[[1]]$PATHWAY))
-            k <- c()
+### map KO of species to pathway
+map2pathway <- function(path, data, P_VALUE){
+    result <- list()
+   
+    rownames <- rownames(data)
+    colnames <- colnames(data)
+    for(i in 1:nrow(data)){
+        pathway_set <- c()
+        indx <- which(!is.na(data[i,]) & data[i,] < P_VALUE & data[i,] >0)
+        row_name <- rownames[i]
+        for(k in colnames[indx]){
+            pathway <- names(keggGet(k)[[1]]$PATHWAY)
+            if(length(pathway) > 0){
+                pathway_set <- c(pathway_set, pathway)
+            }
+        }
+        if(length(pathway_set) >0){
+            write.table(x = pathway_set, file = paste0(path,row_name), sep = "\n", row.names = FALSE, col.names = FALSE)
+            result[[row_name]] <- table(pathway_set)
         }
     }
-    if(length(k) >0){
-        result <- c(result,names(keggGet(k)[[1]]$PATHWAY)) 
+    return(result)
+}
+
+to_pathway_matrix <- function(filename, list){
+    column_names <- c()
+    row_names <- names(list)
+    for(i in 1:length(row_names)){
+         t <- list[[row_names[i]]]
+         column_names <- c(column_names, names(t))
     }
-    result <- as.factor(result)
+    column_names <- unique(column_names)
+    result <- data.frame(matrix(nrow = length(row_names), ncol = length(column_names)))
+    colnames(result) <- column_names
+    rownames(result) <- row_names
     
+    for(i in 1:length(row_names)){
+        df <- as.data.frame(list[[row_names[i]]])
+        for(j in 1:nrow(df)){
+            col_name <- as.character(df[j,1])
+            result[c(row_names[i]), c(col_name)] <- df[j,2]
+        }
+    }
+    
+    result <- result[ , order(names(result))]
+    write.table(x = result, file = filename, sep = "\t")
     return (result)
 }
 

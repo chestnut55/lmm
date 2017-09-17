@@ -43,29 +43,50 @@ convert2genes <- function(path, species_ko, P_VALUE){
     }
 }
 
-### map KO of species to pathway
-map2pathway <- function(path, data, P_VALUE){
-    result <- list()
-   
+### map KO of species to pathway:species -> KO -> pathway
+map2pathway <- function(filename, data, P_VALUE){
+    result <- c()
     rownames <- rownames(data)
     colnames <- colnames(data)
     for(i in 1:nrow(data)){
-        pathway_set <- c()
+        value <- c()
         indx <- which(!is.na(data[i,]) & data[i,] < P_VALUE & data[i,] >0)
-        row_name <- rownames[i]
         for(k in colnames[indx]){
             pathway <- names(keggGet(k)[[1]]$PATHWAY)
-            if(length(pathway) > 0){
-                pathway_set <- c(pathway_set, pathway)
+            if(length(pathway) >0){
+                for(j in 1:length(pathway)){
+                    value <- rbind(value, c(rownames[i], k, pathway[j]))
+                }
             }
         }
-        if(length(pathway_set) >0){
-            write.table(x = pathway_set, file = paste0(path,row_name), sep = "\n", row.names = FALSE, col.names = FALSE)
-            result[[row_name]] <- table(pathway_set)
+        if(length(value) >0){
+            result <- rbind(result, value)
+        }
+        #write.table(x = value, file = paste0(path,rownames[i]), sep = "\t", row.names = FALSE, col.names = FALSE)
+    }
+    
+    write.table(x = result, file = filename, sep = "\t", row.names = FALSE, col.names = FALSE)
+    return (result)
+}
+
+### count the species in the pathway
+### list : species as key, pathway list as value
+count_species_in_pathway <- function(data){
+    species <- as.character(unique(data[,1]))
+    pathways <- as.character(unique(data[,3]))
+    matrix <- data.frame(matrix(nrow = length(species), ncol = length(pathways)))
+    colnames(matrix) <- pathways
+    rownames(matrix) <- species
+    
+    for(pathway in pathways){
+        for(sp in species){
+            matrix[c(sp),c(pathway)] <- length(which(data[,3] == pathway & data[,1] == sp))
         }
     }
-    return(result)
+    
+    return (matrix)
 }
+
 
 to_pathway_matrix <- function(filename, list){
     column_names <- c()
@@ -86,7 +107,6 @@ to_pathway_matrix <- function(filename, list){
             result[c(row_names[i]), c(col_name)] <- df[j,2]
         }
     }
-    
     result <- result[ , order(names(result))]
     write.table(x = result, file = filename, sep = "\t")
     return (result)
@@ -118,4 +138,36 @@ convert2ncbi_protein_id <- function(file_in_path, file_out_path){
         file_out_name <- paste0(file_out_path, x)
         write.table(x = set, file = file_out_name, sep = "\n", row.names = FALSE, col.names = FALSE)
     })
+}
+
+### matrix : species * pathway
+### the value in each matrix cell is the number of species in the pathway
+sampling <-function(matrix){
+    row_names <- rownames(matrix)
+    col_names <- colnames(matrix)
+    sampling_space <- c(row_names, col_names)
+    row_sums <- rowSums(matrix)
+    for(i in 1:length(row_sums)){
+        ret <- c()
+        count <- 0
+        row_indx <- which(matrix[j,] >0)
+        for(n in 1: length(row_indx)){
+            v <- matrix[i, row_indx[n]] # number of the species in the pathway
+            if(v >1){
+                
+            }
+        }
+        random_col_names <- colnames(matrix)[row_indx]
+        random_vector <- c(names(row_sums[i]), random_col_names)
+        for(j in 1:100000){
+            sam <- sample(sampling_space, size = length(random_vector),replace = TRUE)
+            if(length(intersect(random_vector, sam)) >0){
+                ret <- rbind(ret, sam)
+            }
+        }
+        
+
+    }
+    
+    
 }

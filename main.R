@@ -1,6 +1,7 @@
 library("picaplot")
 library("confeti")
 library("KEGGREST")
+library("stringr") ## str_count method
 ### 1. read tables
 source("~/git-code/R/lmm/read_tables.R")
 ### 2. construct matrix
@@ -30,7 +31,9 @@ control_count_species_in_pathway <- count_species_in_pathway(control_pathway_res
 remove(t2d_pathway_result)
 remove(control_pathway_result)
 #######################################end###################################################
-
+####################################sampling#################################################
+t2d_sampling_count <- sampling("~/git-code/R/lmm/data/generated/t2d_sampling", t2d_count_species_in_pathway)
+control_sampling_count <- sampling("~/git-code/R/lmm/data/generated/control_sampling", control_count_species_in_pathway)
 
 
 ######################draw graphs for KO and species##############################

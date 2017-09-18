@@ -142,32 +142,32 @@ convert2ncbi_protein_id <- function(file_in_path, file_out_path){
 
 ### matrix : species * pathway
 ### the value in each matrix cell is the number of species in the pathway
-sampling <-function(matrix){
-    row_names <- rownames(matrix)
-    col_names <- colnames(matrix)
-    sampling_space <- c(row_names, col_names)
-    row_sums <- rowSums(matrix)
-    for(i in 1:length(row_sums)){
-        ret <- c()
-        count <- 0
-        row_indx <- which(matrix[j,] >0)
-        for(n in 1: length(row_indx)){
-            v <- matrix[i, row_indx[n]] # number of the species in the pathway
-            if(v >1){
-                
-            }
+sampling <-function(filename, matrix){
+    r_names <- rownames(matrix)
+    c_names <- colnames(matrix)
+    r_sums <- rowSums(matrix)
+    for(i in 1:length(r_names)){
+        ### random matrix
+        m <- c()
+        for( j in 1:10000){
+            s <- sample(c_names, r_sums[[i]], replace = TRUE)
+            m <- rbind(m,s)
         }
-        random_col_names <- colnames(matrix)[row_indx]
-        random_vector <- c(names(row_sums[i]), random_col_names)
-        for(j in 1:100000){
-            sam <- sample(sampling_space, size = length(random_vector),replace = TRUE)
-            if(length(intersect(random_vector, sam)) >0){
-                ret <- rbind(ret, sam)
+        ### count
+        indx <- which(matrix[i,] >0)
+        for(l in 1:length(indx)){
+            v <- matrix[i, indx[l]] # the number of species in the pathway
+            colname <- c_names[l]
+            count <- 0
+            for(k in 1:nrow(m)){
+                len <- length(which(str_count(m[k,], colname) == 1))
+                if(len >= v){
+                    count <- count + 1
+                }
             }
+            matrix[i, indx[l]] <- count
         }
-        
-
     }
-    
-    
+    write.table(x = matrix, file = filename, sep = "\t")
+    return (matrix)
 }

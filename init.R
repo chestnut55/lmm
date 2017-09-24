@@ -4,6 +4,7 @@
 library("picaplot")
 library("confeti")
 library("KEGGREST")
+library("multigraph")
 ### 1. read tables
 source("~/git-code/R/lmm/read_tables.R")
 ### 2. construct matrix
@@ -48,7 +49,7 @@ write.table(x = control, file = "~/git-code/R/lmm/data/generated/fit/control_fit
 
 ########################PART 4. result analysis########################
 ### filter the KO according to p-value
-P_VALUE <- 0.0005
+P_VALUE <- 0.0001
 t2d <- remove_no_signicant(t2d, P_VALUE)
 control <- remove_no_signicant(control, P_VALUE)
 

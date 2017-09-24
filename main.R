@@ -1,6 +1,7 @@
 library("picaplot")
 library("confeti")
 library("KEGGREST")
+library("multigraph")
 library("stringr") ## str_count method
 ### 1. read tables
 source("~/git-code/R/lmm/read_tables.R")
@@ -14,7 +15,7 @@ source("~/git-code/R/lmm/analysis.R")
 source("~/git-code/R/lmm/graph.R")
 
 ### filter the KO according to p-value
-P_VALUE <- 0.0005
+P_VALUE <- 0.0001
 
 t2d <- read.table("~/git-code/R/lmm/data/generated/fit/t2d_fit.txt", sep = "\t")
 control <- read.table("~/git-code/R/lmm/data/generated/fit/control_fit.txt", sep = "\t")
@@ -39,9 +40,9 @@ draw_bip_network(t2d, p_value = P_VALUE)
 draw_bip_network(control, p_value = P_VALUE)
 
 ######################draw weighted graphs for pathway and species##############################
-t2d <- read.table("~/git-code/R/lmm/data/generated/t2d_pathway", sep = "\t")
-t2d[is.na(t2d)] <- 0
-control <- read.table("~/git-code/R/lmm/data/generated/control_pathway", sep = "\t")
-control[is.na(control)] <- 0
-draw_weight_bip_network(t2d)
-draw_weight_bip_network(control)
+t2d_count_species_in_pathway <- read.table("~/git-code/R/lmm/data/generated/t2d_pathway", sep = "\t")
+t2d_count_species_in_pathway[is.na(t2d_count_species_in_pathway)] <- 0
+control_count_species_in_pathway <- read.table("~/git-code/R/lmm/data/generated/control_pathway", sep = "\t")
+control_count_species_in_pathway[is.na(control_count_species_in_pathway)] <- 0
+draw_weight_bip_network(t2d_count_species_in_pathway)
+draw_weight_bip_network(control_count_species_in_pathway)

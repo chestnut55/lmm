@@ -80,7 +80,6 @@ fit2 <- function(ptr_data, kegg_data, organism_species, result_maxtrix){
 ### result_maxtrix : 0-1 matrix for ptr and kegg: species * ko
 lmm_fit <- function(ptr_data, kegg_data, result_maxtrix){
     result_maxtrix[is.na(result_maxtrix)] <- 0 # replace the NA with 0
-    decomp <- svd(scale(t(ptr_data)))
     #K <- cor(ptr_data) # covariance matrix
     #decomp <- eigen(K, symmetric=TRUE)
     # y is n * 1 vector, n is number of samples
@@ -97,6 +96,7 @@ lmm_fit <- function(ptr_data, kegg_data, result_maxtrix){
         α <- which(result_maxtrix[,c(ko)] == 1)
         if(length(α) > 0){
             formula <- as.formula(paste("y~", paste(paste0(paste0("x[,",α),"]"), collapse="+")))
+            decomp <- svd(scale(t(ptr_data[α,])))
             fit <- lrgpr(formula, decomp)
             p_values <- as.vector(fit$p.values)
             if(length(p_values) > 0){

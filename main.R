@@ -34,8 +34,6 @@ remove(control_pathway_result)
 ####################################sampling#################################################
 t2d_sampling_count <- sampling("~/git-code/R/lmm/data/generated/t2d_sampling", t2d_count_species_in_pathway)
 control_sampling_count <- sampling("~/git-code/R/lmm/data/generated/control_sampling", control_count_species_in_pathway)
-
-
 ######################draw graphs for KO and species##############################
 draw_bip_network(t2d, p_value = P_VALUE)
 draw_bip_network(control, p_value = P_VALUE)

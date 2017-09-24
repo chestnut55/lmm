@@ -58,14 +58,14 @@ t2d_pathway_result <- map2pathway("~/git-code/R/lmm/data/generated/t2d_pathway",
 control_pathway_result <- map2pathway("~/git-code/R/lmm/data/generated/control_pathway",control, P_VALUE)
 
 # get KEGG protein access number according to KO number
-t2d_gene_set <- convert2genes("~/git-code/R/lmm/data/generated/gsea/t2d/",t2d, P_VALUE)
-control_gene_set <- convert2genes("~/git-code/R/lmm/data/generated/gsea/control/",control, P_VALUE)
+#t2d_gene_set <- convert2genes("~/git-code/R/lmm/data/generated/gsea/t2d/",t2d, P_VALUE)
+#control_gene_set <- convert2genes("~/git-code/R/lmm/data/generated/gsea/control/",control, P_VALUE)
 
 ### convert to ncbi protein id
-convert2ncbi_protein_id("~/git-code/R/lmm/data/generated/gsea/t2d/", 
-                        "~/git-code/R/lmm/data/generated/protein/t2d/") # t2d
-convert2ncbi_protein_id("~/git-code/R/lmm/data/generated/gsea/control/",
-                        "~/git-code/R/lmm/data/generated/protein/control/") # control
+#convert2ncbi_protein_id("~/git-code/R/lmm/data/generated/gsea/t2d/", 
+#                        "~/git-code/R/lmm/data/generated/protein/t2d/") # t2d
+#convert2ncbi_protein_id("~/git-code/R/lmm/data/generated/gsea/control/",
+#                        "~/git-code/R/lmm/data/generated/protein/control/") # control
 
-t2d_ko_list <- get_significant_ko("~/git-code/R/lmm/data/generated/ko/t2d/",t2d, P_VALUE)
-control_ko_list <- get_significant_ko("~/git-code/R/lmm/data/generated/ko/control/",control, P_VALUE)
+#t2d_ko_list <- get_significant_ko("~/git-code/R/lmm/data/generated/ko/t2d/",t2d, P_VALUE)
+#control_ko_list <- get_significant_ko("~/git-code/R/lmm/data/generated/ko/control/",control, P_VALUE)

@@ -4,11 +4,20 @@ adjust_pvalue <- function(data){
     for(i in 1: nrow(data)){
         len <- which(data[i,]>0)
         for(j in 1:length(len)){
-            p_values <- c(p_values, data[1,len[j]])
+            p_values <- c(p_values, data[i,len[j]])
         }
     }
     p_values <- p.adjust(p_values, method = "fdr", n = length(p_values))
-    return (p_values)
+    # set the adjust p value to matrix
+    count <- 0
+    for(m in 1:nrow(data)){
+        row_p_values <- which(data[i,]>0)
+        count <- count + length(row_p_values)
+        for(n in 1:length(row_p_values)){
+            data[m,row_p_values[n]] <- p_values[count-length(row_p_values)+n]
+        }
+    }
+    return (data)
 }
 ### remove the row or column without any significant level
 ### data : t2d or control

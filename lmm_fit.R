@@ -27,8 +27,9 @@ fit <- function(ptr_data, kegg_data, organism_species, result_maxtrix){
             formula <- as.formula(paste("y~", paste(paste0(paste0("tmp[,",xx),"]"), collapse="+")))
             #print(formula)
             fit <- lrgpr(formula, decomp)
+            t_wald <- wald(fit,1:ncol(tmp))
             #fit <- lm(formula,data = cbind(y,tmp)) # fit the linear model
-            p_values <- as.vector(fit$p.values)
+            p_values <- t_wald$result$chi2[3]
             #print(p_values)
             if(length(p_values) > 0){
                 p_values <- p_values[2:length(p_values)] ### remove the intercepet column
@@ -79,7 +80,6 @@ fit2 <- function(ptr_data, kegg_data, organism_species, result_maxtrix){
 ### kegg_data : t2d or control group: ko * samples
 ### result_maxtrix : 0-1 matrix for ptr and kegg: species * ko
 lmm_fit <- function(ptr_data, kegg_data, result_maxtrix){
-    result_maxtrix[is.na(result_maxtrix)] <- 0 # replace the NA with 0
     #K <- cor(ptr_data) # covariance matrix
     #decomp <- eigen(K, symmetric=TRUE)
     # y is n * 1 vector, n is number of samples
@@ -88,6 +88,10 @@ lmm_fit <- function(ptr_data, kegg_data, result_maxtrix){
     # β is m * 1 vector, m is number of species
     # formula: y = x*α*β
     # first, get the design matrix x*α
+    result_maxtrix <- result_maxtrix[,which(colSums(abs(result_maxtrix)) != 0)] # many ko have no relationship with species
+    kegg_data <- kegg_data[colnames(result_maxtrix),]
+    kegg_data <- kegg_data[which(rowSums(abs(kegg_data)) != 0),] # sum zero
+    #result <- c()
     for(i in 1:nrow(kegg_data)){
         y <- t(kegg_data[i,])
         ko <- rownames(kegg_data)[i]
@@ -95,13 +99,15 @@ lmm_fit <- function(ptr_data, kegg_data, result_maxtrix){
         #α <- result_maxtrix[,c(ko)]
         α <- which(result_maxtrix[,c(ko)] == 1)
         if(length(α) > 0){
-            formula <- as.formula(paste("y~", paste(paste0(paste0("x[,",α),"]"), collapse="+")))
             decomp <- svd(scale(t(ptr_data[α,])))
-            fit <- lrgpr(formula, decomp)
-            p_values <- as.vector(fit$p.values)
-            if(length(p_values) > 0){
-                p_values <- p_values[2:length(p_values)] ### remove the intercepet column
-                result_maxtrix[α,c(ko)] <- p_values
+            for( j in 1:length(α)){
+                formula <- as.formula(paste("y~", paste(paste0(paste0("x[,",α[j]),"]"), collapse="")))
+                fit <- lrgpr(formula, decomp)
+                p_values <- as.vector(fit$p.values)
+                if(length(p_values) > 0){
+                    p_values <- p_values[2:length(p_values)] ### remove the intercepet column
+                    result_maxtrix[α[j],c(ko)] <- p_values
+                }
             }
         }
     }

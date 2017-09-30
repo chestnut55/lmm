@@ -14,7 +14,7 @@ source("~/git-code/R/lmm/analysis.R")
 ### 5. draw graphs
 source("~/git-code/R/lmm/graph.R")
 
-### filter the KO according to p-value
+### filter the KO according to fdr p-value
 P_VALUE <- 0.0001
 
 t2d <- read.table("~/git-code/R/lmm/data/generated/fit/t2d_fit.txt", sep = "\t")

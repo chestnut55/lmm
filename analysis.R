@@ -1,6 +1,19 @@
+
+adjust_pvalue <- function(data){
+    p_values <- c()
+    for(i in 1: nrow(data)){
+        len <- which(data[i,]>0)
+        for(j in 1:length(len)){
+            p_values <- c(p_values, data[1,len[j]])
+        }
+    }
+    p_values <- p.adjust(p_values, method = "fdr", n = length(p_values))
+    return (p_values)
+}
 ### remove the row or column without any significant level
 ### data : t2d or control
 remove_no_signicant <- function(data, P_VALUE){
+    data <- adjust_pvalue(data)
     c <- c()
     for(i in 1:ncol(data)){
         indx <- which(!is.na(data[,i]) & data[,i] < P_VALUE & data[,i] >0)
